@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entry Data BBM Cummins</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-color: linear-gradient(135deg, #e0eafc, #cfdef3);
+            --container-bg: #ffffff;
+            --text-color: #333;
+            --heading-color: #2c3e50;
+            --subheading-color: #2980b9;
+            --label-color: #34495e;
+            --creator-color: #7f8c8d;
+            --input-bg: #f9f9f9;
+            --input-border: #ddd;
+            --result-bg: linear-gradient(135deg, #ecf0f1, #dfe6e9);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-hover-transform: scale(1.05);
+        }
+        .dark-mode {
+            --bg-color: linear-gradient(135deg, #1e2a3a, #121a24);
+            --container-bg: #2d3748;
+            --text-color: #e2e8f0;
+            --heading-color: #90cdf4;
+            --subheading-color: #63b3ed;
+            --label-color: #cbd5e0;
+            --creator-color: #a0aec0;
+            --input-bg: #1a202c;
+            --input-border: #4a5568;
+            --result-bg: linear-gradient(135deg, #2d3748, #1a202c);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px var(--shadow-color);
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* Tambahkan ini */
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        h1 {
+            text-align: center;
+            color: var(--heading-color);
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.3s ease;
+        }
+        .creator {
+            text-align: center;
+            color: var(--creator-color);
+            margin-bottom: 25px;
+            font-size: 0.9em;
+            font-style: italic;
+            transition: color 0.3s ease;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        h3 {
+            color: var(--subheading-color);
+            margin-bottom: 12px;
+            font-size: 1.3em;
+            border-bottom: 2px solid var(--subheading-color);
+            padding-bottom: 5px;
+            display: inline-block;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+        .field-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .field-label {
+            font-weight: 500;
+            color: var(--label-color);
+            min-width: 150px;
+            transition: color 0.3s ease;
+        }
+        select, input {
+            width: 100%;
+            max-width: 220px;
+            padding: 10px;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s, color 0.3s;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+        select:focus, input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            outline: none;
+        }
+        .required input:invalid {
+            border-color: #e74c3c;
+        }
+        .required input:valid {
+            border-color: #2ecc71;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            max-width: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        #plnBtn, #warmBtn {
+            background: linear-gradient(45deg, #3498db, #2980b9); /* Warna default */
+            color: white;
+        }
+        #plnBtn.active, #warmBtn.active {
+            background: linear-gradient(45deg, #e74c3c, #c0392b); /* Warna saat aktif */
+        }
+        #plnBtn:hover, #warmBtn:hover {
+            background: linear-gradient(45deg, #2980b9, #3498db);
+            transform: var(--button-hover-transform);
+        }
+        #calculateBtn, #resetBtn {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        #calculateBtn:hover, #resetBtn:hover {
+            background: linear-gradient(45deg, #219653, #27ae60);
+            transform: var(--button-hover-transform);
+        }
+        #result {
+            margin-top: 25px;
+            padding: 20px;
+            background: var(--result-bg);
+            border-radius: 10px;
+            font-size: 1em;
+            box-shadow: inset 0 2px 4px var(--shadow-color);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        #result h3 {
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        p {
+            margin: 8px 0;
+            color: var(--text-color);
+            transition: color 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+        .theme-toggle {
+            position: absolute; /* Ubah dari fixed ke absolute */
+            top: 20px; /* Sesuaikan jarak dari atas */
+            right: 20px; /* Sesuaikan jarak dari kanan */
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            transition: transform 0.3s ease, background 0.3s ease;
+            z-index: 100;
+        }
+        .theme-toggle:hover {
+            transform: var(--button-hover-transform);
+        }
+        .dark-mode .theme-toggle {
+            background: linear-gradient(45deg, #e67e22);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--creator-color);
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+        @media (min-width: 600px) {
+            h1 {
+                font-size: 2.2em;
+            }
+            .container {
+                padding: 35px;
+            }
+            select, input {
+                max-width: 250px;
+            }
+            button {
+                max-width: 250px;
+            }
+        }
+        @media (max-width: 480px) {
+            .button-group {
+                flex-direction: column;
+            }
+            button {
+                max-width: 100%;
+            }
+            .field-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .field-label {
+                min-width: auto;
+            }
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="theme-toggle" id="themeToggle">
+            <i id="themeIcon">🌙</i>
+        </div>
+        <h1>Form perhitungan BBM</h1>
+        <div class="creator">==============================</div>
+        <div class="section">
+            <h3>Spesifikasi Genset</h3>
+            <div class="field-row">
+                <span class="field-label">Tipe Genset:</span>
+                <select id="gensetType" onchange="updateSpecs()" required>
+                    <option value="default">Pilih Tipe Genset</option>
+                    <option value="cummins300">Cummins (300 kVA, 240 kW, 57.3 L/H)</option>
+                    <option value="previous" selected>Cummins (350 kVA, 240 kW, 70.5 L/H)</option>
+                    <option value="cummins400">Cummins (400 kVA, 320 kW, 72 L/H)</option>
+                </select>
+            </div>
+            <div id="gensetSpecs">
+                <p>Kapasitas: 350 kVA, 240 kW</p>
+                <p>Consumption Full Load: 70.5 L/H</p>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Total BBM Saat Ini (L):</span>
+                <input type="number" id="totalFuel" step="0.1" class="required" required>
+            </div>
+        </div>
+
+        <div class="section button-group" style="margin-top: 20px;">
+            <button id="plnBtn" onclick="toggleSection('pln')">PLN OFF</button>
+            <button id="warmBtn" onclick="toggleSection('warm')">Warming UP</button>
+        </div>
+
+        <div id="plnSection" class="section hidden">
+            <h3>PLN OFF</h3>
+            <div class="field-row">
+                <span class="field-label">Load MDP1 (kW):</span>
+                <input type="number" id="loadMDP1" step="0.1">
+            </div>
+            <div class="field-row">
+                <span class="field-label">Load MDP2 (kW):</span>
+                <input type="number" id="loadMDP2" step="0.1">
+            </div>
+            <div class="field-row">
+                <span class="field-label">Engine Run Time Sebelum:</span>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="engineHourBefore" placeholder="Jam" step="1" style="max-width: 100px;">
+                    <input type="number" id="engineMinBefore" placeholder="Menit" step="1" style="max-width: 100px;">
+                </div>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Engine Run Time Sesudah:</span>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="engineHourAfter" placeholder="Jam" step="1" style="max-width: 100px;">
+                    <input type="number" id="engineMinAfter" placeholder="Menit" step="1" style="max-width: 100px;">
+                </div>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Duration (Menit):</span>
+                <input type="number" id="durationPLN" step="1" readonly>
+            </div>
+        </div>
+
+        <div id="warmSection" class="section hidden">
+            <h3>Warming Up</h3>
+            <div class="field-row">
+                <span class="field-label">Engine Run Time Sebelum:</span>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="engineHourBeforeWarm" placeholder="Jam" step="1" style="max-width: 100px;">
+                    <input type="number" id="engineMinBeforeWarm" placeholder="Menit" step="1" style="max-width: 100px;">
+                </div>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Engine Run Time Sesudah:</span>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="engineHourAfterWarm" placeholder="Jam" step="1" style="max-width: 100px;">
+                    <input type="number" id="engineMinAfterWarm" placeholder="Menit" step="1" style="max-width: 100px;">
+                </div>
+            </div>
+            <div class="field-row">
+                <span class="field-label">Duration (Menit):</span>
+                <input type="number" id="durationWarm" step="1" readonly>
+            </div>
+        </div>
+
+        <div class="button-group" id="actionButtons" style="display: none;">
+            <button id="calculateBtn" onclick="calculate()">Hitung</button>
+            <button id="resetBtn" onclick="reset()">Reset ↺</button>
+        </div>
+
+        <div id="result"></div>
+        
+        <div class="footer">
+            Version 1.0 - Last Update: March 2025
+			<br> by SNT MANADO
+        </div>
+    </div>
+
+    <script>
+        let gensetData = {
+            "default": { capacityKVA: 0, capacityKW: 0, fullConsumption: 0, consumptionTable: {} },
+            "cummins300": { capacityKVA: 300, capacityKW: 240, fullConsumption: 57.3, consumptionTable: { 10: 5.73, 25: 14.325, 50: 28.65, 75: 42.975, 100: 57.3 } },
+            "previous": { capacityKVA: 350, capacityKW: 240, fullConsumption: 70.5, consumptionTable: { 10: 7.05, 25: 17.625, 50: 35.25, 75: 52.875, 100: 70.5 } },
+            "cummins400": { capacityKVA: 400, capacityKW: 320, fullConsumption: 72, consumptionTable: { 10: 7.2, 25: 18, 50: 36, 75: 54, 100: 72 } }
+        };
+
+        let currentTotalFuel = 0;
+        let lastTotalFuel = 0;
+        let lastDurationPLN = -1;
+        let lastDurationWarm = -1;
+        let lastGensetType = "default";
+        let activeSection = null;
+        
+        // Check for saved theme preference or default to light
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeIcon').textContent = '☀️';
+        }
+        
+        // Theme toggle functionality
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('themeIcon').textContent = '☀️';
+            } else {
+                localStorage.setItem('theme', 'light');
+                document.getElementById('themeIcon').textContent = '🌙';
+            }
+        });
+
+        document.getElementById("totalFuel").addEventListener("input", function() {
+            const newTotalFuel = parseFloat(this.value) || 0;
+            if (!isNaN(newTotalFuel) && newTotalFuel > 0 && newTotalFuel !== lastTotalFuel) {
+                currentTotalFuel = newTotalFuel;
+                lastTotalFuel = newTotalFuel;
+                console.log("Total BBM diperbarui ke: " + currentTotalFuel);
+            }
+        });
+
+        function updateSpecs() {
+            const gensetType = document.getElementById("gensetType").value;
+            const specs = gensetData[gensetType];
+            document.getElementById("gensetSpecs").innerHTML = 
+                `<p>Kapasitas: ${specs.capacityKVA} kVA, ${specs.capacityKW} kW</p>
+                <p>Consumption Full Load: ${specs.fullConsumption} L/H</p>`;
+            const newTotalFuel = parseFloat(document.getElementById("totalFuel").value) || 0;
+            if (!isNaN(newTotalFuel) && newTotalFuel > 0) {
+                currentTotalFuel = newTotalFuel;
+                lastTotalFuel = newTotalFuel;
+                console.log("Total BBM diatur ulang ke: " + currentTotalFuel + " saat ganti genset");
+            }
+            calculateDuration();
+            calculateDurationWarm();
+        }
+
+        function toggleSection(section) {
+            if (activeSection === section) {
+                document.getElementById(`${section}Section`).classList.add("hidden");
+                document.getElementById("actionButtons").style.display = "none";
+                document.getElementById(section + "Btn").classList.remove("active");
+                activeSection = null;
+                return;
+            }
+
+            document.getElementById("plnSection").classList.add("hidden");
+            document.getElementById("warmSection").classList.add("hidden");
+            document.getElementById("actionButtons").style.display = "none";
+            if (activeSection) {
+                document.getElementById(activeSection + "Btn").classList.remove("active");
+            }
+
+            if (section === "pln") {
+                document.getElementById("plnSection").classList.remove("hidden");
+                activeSection = "pln";
+            } else if (section === "warm") {
+                document.getElementById("warmSection").classList.remove("hidden");
+                activeSection = "warm";
+            }
+            document.getElementById("actionButtons").style.display = "flex";
+            document.getElementById(section + "Btn").classList.add("active");
+        }
+
+        function calculateDuration() {
+            const hourBefore = parseFloat(document.getElementById("engineHourBefore").value) || 0;
+            const minBefore = parseFloat(document.getElementById("engineMinBefore").value) || 0;
+            const hourAfter = parseFloat(document.getElementById("engineHourAfter").value) || 0;
+            const minAfter = parseFloat(document.getElementById("engineMinAfter").value) || 0;
+
+            const totalMinBefore = (hourBefore * 60) + minBefore;
+            const totalMinAfter = (hourAfter * 60) + minAfter;
+            const duration = totalMinAfter - totalMinBefore;
+
+            document.getElementById("durationPLN").value = duration >= 0 ? duration : 0;
+        }
+
+        function calculateDurationWarm() {
+            const hourBeforeWarm = parseFloat(document.getElementById("engineHourBeforeWarm").value) || 0;
+            const minBeforeWarm = parseFloat(document.getElementById("engineMinBeforeWarm").value) || 0;
+            const hourAfterWarm = parseFloat(document.getElementById("engineHourAfterWarm").value) || 0;
+            const minAfterWarm = parseFloat(document.getElementById("engineMinAfterWarm").value) || 0;
+
+            const totalMinBeforeWarm = (hourBeforeWarm * 60) + minBeforeWarm;
+            const totalMinAfterWarm = (hourAfterWarm * 60) + minAfterWarm;
+            const durationWarm = totalMinAfterWarm - totalMinBeforeWarm;
+
+            document.getElementById("durationWarm").value = durationWarm >= 0 ? durationWarm : 0;
+        }
+
+        function calculate() {
+            const gensetType = document.getElementById("gensetType").value;
+            const totalFuelInput = document.getElementById("totalFuel").value;
+            if (gensetType === "default" || !totalFuelInput || parseFloat(totalFuelInput) <= 0) {
+                document.getElementById("result").innerHTML = "<h3>Hasil Perhitungan</h3><p>Tipe Genset: " + (gensetType !== "default" ? gensetData[gensetType].capacityKVA + " kVA" : "Belum dipilih") + "</p><p>Pilih tipe genset dan masukkan Total BBM Saat Ini yang valid (lebih dari 0).</p>";
+                return;
+            }
+
+            const specs = gensetData[gensetType];
+            const loadMDP1 = parseFloat(document.getElementById("loadMDP1").value) || 0;
+            const loadMDP2 = parseFloat(document.getElementById("loadMDP2").value) || 0;
+            const durationPLN = parseFloat(document.getElementById("durationPLN").value) || 0;
+            const durationWarm = parseFloat(document.getElementById("durationWarm").value) || 0;
+
+            const shouldRecalculate = (durationPLN !== lastDurationPLN || durationWarm !== lastDurationWarm || gensetType !== lastGensetType || lastDurationPLN < 0 || lastDurationWarm < 0);
+
+            let resultHTML = "<h3>Hasil Perhitungan</h3><p>Tipe Genset: " + (gensetType !== "default" ? gensetData[gensetType].capacityKVA + " kVA" : "Belum dipilih") + "</p>";
+            let totalConsumption = 0;
+            let remainingFuel = currentTotalFuel;
+
+            if (shouldRecalculate && (durationPLN > 0 || durationWarm > 0)) {
+                if (activeSection === "pln" && durationPLN > 0) {
+                    const loadTotal = loadMDP1 + loadMDP2;
+                    const loadPercentage = (loadTotal / specs.capacityKW) * 100;
+                    let consumptionPerHourPLN = (loadPercentage / 100) * specs.fullConsumption;
+
+                    const percentages = Object.keys(specs.consumptionTable).map(Number).sort((a, b) => a - b);
+                    for (let i = 0; i < percentages.length - 1; i++) {
+                        if (loadPercentage >= percentages[i] && loadPercentage <= percentages[i + 1]) {
+                            const lowerCons = specs.consumptionTable[percentages[i]];
+                            const upperCons = specs.consumptionTable[percentages[i + 1]];
+                            const lowerPerc = percentages[i];
+                            const upperPerc = percentages[i + 1];
+                            consumptionPerHourPLN = lowerCons + ((loadPercentage - lowerPerc) / (upperPerc - lowerPerc)) * (upperCons - lowerCons);
+                            break;
+                        }
+                    }
+                    if (loadPercentage > 100) consumptionPerHourPLN = specs.fullConsumption;
+
+                    const durationPLNHour = durationPLN / 60;
+                    const consumptionPLN = durationPLNHour * consumptionPerHourPLN;
+                    totalConsumption += consumptionPLN;
+
+                    resultHTML += 
+                        `<p><b>PLN OFF:</b></p>
+                        <p>Load Total: ${loadTotal.toFixed(2)} kW</p>
+                        <p>Load %: ${loadPercentage.toFixed(2)}%</p>
+                        <p>Consumption per Jam: ${consumptionPerHourPLN.toFixed(2)} L/H</p>
+                        <p>Duration: ${durationPLNHour.toFixed(2)} Jam</p>
+                        <p>Consumption: ${consumptionPLN.toFixed(2)} Liter</p>`;
+                }
+
+                if (activeSection === "warm" && durationWarm > 0) {
+                    const durationWarmHour = durationWarm / 60;
+                    const consumptionWarm = durationWarmHour * (specs.fullConsumption * 0.1);
+                    totalConsumption += consumptionWarm;
+
+                    resultHTML += 
+                        `<p><b>Warming Up:</b></p>
+                        <p>Duration: ${durationWarmHour.toFixed(2)} Jam</p>
+                        <p>Consumption per Jam: ${(specs.fullConsumption * 0.1).toFixed(2)} L/H</p>
+                        <p>Consumption: ${consumptionWarm.toFixed(2)} Liter</p>`;
+                }
+
+                remainingFuel = Math.max(0, currentTotalFuel - totalConsumption);
+                currentTotalFuel = remainingFuel;
+                console.log("Total Consumption: " + totalConsumption + ", Remaining Fuel: " + remainingFuel + ", Genset Type: " + gensetType);
+            }
+
+            if (durationPLN > 0 || durationWarm > 0) {
+                resultHTML += `<p><b>Total BBM Tersisa:</b> ${remainingFuel.toFixed(2)} Liter</p>`;
+            } else {
+                resultHTML += "<p>Masukkan durasi PLN OFF atau Warming UP untuk menghitung.</p>";
+            }
+
+            if (shouldRecalculate) {
+                lastDurationPLN = durationPLN;
+                lastDurationWarm = durationWarm;
+                lastGensetType = gensetType;
+            }
+
+            document.getElementById("result").innerHTML = resultHTML;
+        }
+
+        function reset() {
+            document.getElementById("loadMDP1").value = "";
+            document.getElementById("loadMDP2").value = "";
+            document.getElementById("engineHourBefore").value = "";
+            document.getElementById("engineMinBefore").value = "";
+            document.getElementById("engineHourAfter").value = "";
+            document.getElementById("engineMinAfter").value = "";
+            document.getElementById("durationPLN").value = "";
+            document.getElementById("engineHourBeforeWarm").value = "";
+            document.getElementById("engineMinBeforeWarm").value = "";
+            document.getElementById("engineHourAfterWarm").value = "";
+            document.getElementById("engineMinAfterWarm").value = "";
+            document.getElementById("durationWarm").value = "";
+            document.getElementById("gensetType").value = "default";
+            document.getElementById("totalFuel").value = "";
+            currentTotalFuel = 0;
+            lastTotalFuel = 0;
+            lastDurationPLN = -1;
+            lastDurationWarm = -1;
+            lastGensetType = "default";
+            activeSection = null;
+            document.getElementById("plnSection").classList.add("hidden");
+            document.getElementById("warmSection").classList.add("hidden");
+            document.getElementById("actionButtons").style.display = "none";
+            document.getElementById("plnBtn").classList.remove("active");
+            document.getElementById("warmBtn").classList.remove("active");
+            document.getElementById("gensetSpecs").innerHTML = "";
+            document.getElementById("result").innerHTML = "";
+            updateSpecs();
+        }
+
+        document.getElementById("engineHourBefore").addEventListener("input", calculateDuration);
+        document.getElementById("engineMinBefore").addEventListener("input", calculateDuration);
+        document.getElementById("engineHourAfter").addEventListener("input", calculateDuration);
+        document.getElementById("engineMinAfter").addEventListener("input", calculateDuration);
+        document.getElementById("engineHourBeforeWarm").addEventListener("input", calculateDurationWarm);
+        document.getElementById("engineMinBeforeWarm").addEventListener("input", calculateDurationWarm);
+        document.getElementById("engineHourAfterWarm").addEventListener("input", calculateDurationWarm);
+        document.getElementById("engineMinAfterWarm").addEventListener("input", calculateDurationWarm);
+
+        updateSpecs();
+    </script>
+</body>
+</html>
